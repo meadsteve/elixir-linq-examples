@@ -2873,9 +2873,10 @@ test "linq69: Any - Grouped" do
   products = get_product_list()
 
   product_groups = products
-    |> Enum.group_by(fn x -> x.category end)
-    |> Enum.filter(fn x -> elem(x, 1) |> Enum.any?(fn p -> p.units_in_stock == 0 end) end)
-    |> Enum.map fn x -> %{category: elem(x, 0), products: elem(x, 1)} end
+   |> Enum.group_by(fn x -> x.category end)
+   |> Enum.filter(fn {category, products} -> products |> Enum.all?(fn p -> p.units_in_stock > 0 end) end)
+   |> Enum.map fn {category, products} -> %{category: category, products: products} end
+
 
   IO.inspect product_groups
 end
